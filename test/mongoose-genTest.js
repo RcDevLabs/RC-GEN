@@ -5,11 +5,11 @@ var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
 var nexpect = require('nexpect');
 
-var binPath = path.resolve(__dirname, '../bin/mongoose-gen');
+var binPath = path.resolve(__dirname, '../bin/rc-gen');
 var tempDir = path.resolve(__dirname, '../temp');
 
 
-describe('mongoose-gen', function(){
+describe('rc-gen', function(){
     describe('Non-interactive mode', function(){
         describe('Error execution', function(){
             it('Require model arg, should print error', function(done){
@@ -279,7 +279,7 @@ describe('mongoose-gen', function(){
     it('--help, should print help', function(done){
         run('', ['--help'], function(err, stdout){
             if(err){ return done(err); }
-            assert.ok(/Usage: mongoose-gen \[options\]/.test(stdout));
+            assert.ok(/Usage: rc-gen \[options\]/.test(stdout));
             assert.ok(/--help/.test(stdout));
             assert.ok(/--version/.test(stdout));
             assert.ok(/-m, --model <modelName>  model name/.test(stdout));

@@ -1,18 +1,22 @@
-[![Build Status](https://travis-ci.org/DamienP33/express-mongoose-generator.svg?branch=master)](https://travis-ci.org/DamienP33/express-mongoose-generator)
-# express-mongoose-generator
+# rc-gen
 
-It’s a mongoose model, REST controller and Express router code generator for Express.js 4 application.
+It’s a mongoose model, REST controller and Express router code generator for Express.js 4 application. FORKED FROM `express-mongoose-generator`
 
 ## Installation
+
+To run this, clone the repo to some folder. Access it and run `npm install -g`
+
 ```bash
-$ npm install -g express-mongoose-generator
+$ git clone github.com/thisrepo.git rc-gen-source
+$ cd rc-gen-source
+$ npm install -g .
 ```
 
 ## Usage
 ### Non-Interactive mode
 Generates a Mongoose model, a REST controller and Express router :
 ```bash
-$ mongoose-gen -m car -f carDoor:number,color -r
+$ rc-gen -m car -f carDoor:number,color -r
         create: ./models/cardModel.js
         create: ./routes/cards.js
         create: ./controllers/cardController.js
@@ -35,7 +39,7 @@ $ mongoose-gen -m car -f carDoor:number,color -r
 
 Generates a Mongoose model, a REST controller and Express router :
 ```bash
-$ mongoose-gen
+$ rc-gen
 Model Name : card
 Available types : string, number, date, boolean, array
 Field Name (press <return> to stop adding fields) : door
@@ -51,7 +55,7 @@ Generate Rest (yes/no) ? [yes] :
 
 ## Rendering
 ### Model
-models/carModel.js :
+modelName/model.js :
 ```javascript
 var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
@@ -65,11 +69,11 @@ module.exports = mongoose.model('car', carSchema);
 ```
 
 ### Router
-routes/cars.js :
+modelName/index.js :
 ```javascript
 var express = require('express');
 var router = express.Router();
-var controller = require('../controllers/carController.js');
+var controller = require('functions/controller.js');
 
 /*
  * GET
@@ -110,9 +114,9 @@ module.exports = router;
 ```
 
 ### Controller
-controllers/carController.js :
+modelName/functions/controller.js :
 ```javascript
-var model = require('../models/carModel.js');
+var model = require('../model.js');
 
 /**
  * carController.js
@@ -236,7 +240,7 @@ You then only have to add router in app.js file and MongoDB connection whit Mong
 app.js :
 ```javascript
 var routes = require('./routes/index');
-var cars = require('./routes/cars');
+var cars = require('./modelName');
  ...
 
 app.use('/', routes);

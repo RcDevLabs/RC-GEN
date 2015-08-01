@@ -1,8 +1,8 @@
 {
-  "name": "express-mongoose-generator",
+  "name": "rc-express-mongoose-generator",
   "version": "1.0.0",
-  "description": "It’s a mongoose model, REST controller and Express router code generator for Express.js 4 application",
-  "author": "Damien Perrier <damienperrier33@gmail.com>",
+  "description": "RCDev's fork from https://github.com/DamienP33/express-mongoose-generator",
+  "author": "RCDev <romuloctba@gmail.com>",
   "keywords": [
     "mongodb",
     "mongoose",
@@ -13,9 +13,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/DamienP33/express-mongoose-generator"
+    "url": ""
   },
-  "main": "bin/mongoose-gen",
+  "main": "bin/rc-gen",
   "scripts": {
     "test": "mocha --reporter spec --bail --check-leaks test/"
   },
@@ -25,11 +25,12 @@
   "license": "MIT",
   "preferGlobal": true,
   "bin": {
-    "mongoose-gen": "./bin/mongoose-gen"
+    "rc-gen": "./bin/rc-gen"
   },
   "dependencies": {
     "async": "^0.9.0",
-    "commander": "^2.5.0"
+    "commander": "^2.5.0",
+    "mkdirp": "*"
   },
   "devDependencies": {
     "mkdirp": "^0.5.0",

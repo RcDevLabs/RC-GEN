@@ -1,0 +1,256 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies
+ */
+var program  = require('commander');
+var readline = require('readline');
+var async    = require('async');
+var generators = require('../lib/generators');
+var cliStyles = require('../lib/cliStyles');
+
+var pkg = require('../package.json');
+var version = pkg.version;
+
+var rl = readline.createInterface({
+    input : process.stdin,
+    output: process.stdout
+});
+
+var allowedFieldsTypes = ['string', 'number', 'date', 'boolean', 'array'];
+
+// CLI
+program
+    .version(version)
+    .usage('[options]')
+    .option('-m, --model <modelName>', 'model name')
+    .option('-f, --fields <fields>', 'model fields (name1:type1,name2:type2)')
+    .option('-r, --rest', 'enable generation REST')
+    .parse(process.argv);
+
+// Main program
+(function (path){
+    if(program.model || program.fields){
+        runNonInteractiveMode(path);
+    } else {
+        runInteractiveMode(path);
+    }
+})('.');
+
+/**
+ * Get parameters in interactive mode
+ * @param path {string} destination path
+ */
+function runInteractiveMode(path){
+    async.series({
+            name: function (cb){
+                askQuestion('Model Name : ', isModelNameParamValid, function (name){
+                    console.log(cliStyles.green + 'Available types : string, number, date, boolean, array' + cliStyles.reset);
+                    cb(null, name);
+                });
+            },
+            fields: function (cb){
+                var exit   = false;
+                var fields = [];
+
+                async.whilst(
+                    function(){ return !exit; },
+                    function(cb){
+                        async.series({
+                                name: function(cb){
+                                    askQuestion('Field Name (press <return> to stop adding fields) : ', null, function(fieldName){
+                                        if(fieldName.trim().length === 0){
+                                            exit = true;
+                                        }
+                                        cb(exit, fieldName);
+                                    });
+                                },
+                                type: function(cb){
+                                    askQuestion('Field Type [string] : ', isFieldTypeParamValid, function(fieldType){
+                                        fieldType = (fieldType.trim().length === 0) ? 'string' : fieldType;
+                                        cb(null, fieldType);
+                                    });
+                                }
+                            },
+                            function (err, results){
+                                if(!err){
+                                    fields.push(results);
+                                }
+                                cb();
+                            });
+                    },
+                    function(err, results){
+                        cb(null, fields);
+                    });
+            },
+            rest: function (cb) {
+                askQuestion('Generate Rest (yes/no) ? [yes] : ', isRestParamValid, function(rest){
+                    rest = (rest.trim().length === 0) ? 'yes' : rest;
+                    cb(null, rest);
+                });
+            }
+        },
+        function(err, results){
+            generators.generateModel(path, results.name, results.fields);
+
+            if(results.rest == 'yes'){
+                generators.generateRouter(path, results.name);
+                generators.generateController(path, results.name, results.fields);
+            }
+
+            closeProgram();
+    });
+}
+
+/**
+ * Get parameters in non-interactive mode
+ * @param path {string} destination path
+ */
+function runNonInteractiveMode(path){
+    if(!isModelNameParamValid(program.model) || !isFieldsParamValid(program.fields)){ closeProgram(); return ; }
+
+    var modelName = program.model;
+    var modelFields = formatFieldsParamInArray(program.fields);
+    if(!modelFields){ closeProgram(); return ;}
+
+    generators.generateModel(path, modelName, modelFields);
+
+    if(program.rest){
+        generators.generateRouter(path, modelName);
+        generators.generateController(path, modelName, modelFields);
+    }
+
+    closeProgram();
+}
+
+/**
+ * Ask a question in the console and waits for a response
+ * if the answer is invalid, the question is recalled
+ * @param question {string} input question in the console
+ * @param validate {function} validation function (nullable)
+ * @param callback {function} callback function
+ */
+function askQuestion(question, validate, callback){
+    rl.question(question, function(answer){
+        if(validate){
+            if(!validate(answer)){
+                askQuestion(question, validate, callback);
+                return ;
+            }
+        }
+        callback(answer);
+    });
+}
+
+/**
+ * Close the program
+ */
+function closeProgram(){
+    rl.close();
+}
+
+/**
+ * Validate model name input
+ * @param name {string}
+ * @returns {boolean} is validated
+ */
+function isModelNameParamValid(name){
+    if(!name || name.trim().length === 0){
+        consoleError('Argument required : Model name');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * validate field type input
+ * @param fieldType {string}
+ * @returns {boolean} is validated
+ */
+function isFieldTypeParamValid(fieldType){
+    if(!fieldType || fieldType.trim().length === 0){ fieldType = 'string'; } // default value
+    if(allowedFieldsTypes.indexOf(fieldType) == -1){
+        consoleError('Invalid Argument : Field type is not allowed');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * validate rest input
+ * @param param {string}
+ * @returns {boolean} is validated
+ */
+function isRestParamValid(param){
+    if(!param || param.trim().length === 0){ param = 'yes'; } // default value
+    if(param !== 'yes' && param !== 'no'){
+        consoleError('Argument invalid : rest');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Validate fields input
+ * @param fields {string}
+ * @returns {boolean} is validated
+ */
+function isFieldsParamValid(fields){
+    if(!fields || fields.trim().length === 0){
+        consoleError('Argument required : fields');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Validate name / type of a field
+ * @param fieldName {string}
+ * @param fieldType {string}
+ * @returns {boolean} is validated
+ */
+function isFieldValid(fieldName, fieldType){
+    if(!fieldName || fieldName.trim().length === 0){
+        consoleError('Argument required : Field Name');
+        return false;
+    }
+    if(!fieldType || fieldType.trim().length === 0){
+        consoleError('Argument required : Field type');
+        return false;
+    }
+    if(allowedFieldsTypes.indexOf(fieldType) == -1){
+        consoleError('Invalid Argument : Field type is not allowed');
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Format fields input in array
+ * @param fields {string} fields input
+ * @returns {Array} fields formatted
+ */
+function formatFieldsParamInArray(fields){
+    var arrayFields = fields.split(',');
+    var result = [];
+
+    var err = arrayFields.every(function(field){
+        var f = field.split(':');
+        var fieldName = f[0];
+        var fieldType = (f[1] || 'string');
+
+        if(!isFieldValid(fieldName, fieldType)){ return false; }
+
+        result.push({
+            name: fieldName,
+            type: fieldType
+        });
+        return true;
+    });
+
+    return (!err)? false : result;
+}
+
+function consoleError(msg){
+    return console.log(cliStyles.red + msg + cliStyles.reset);
+}
