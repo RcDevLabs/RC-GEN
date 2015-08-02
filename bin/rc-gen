@@ -17,7 +17,7 @@ var rl = readline.createInterface({
     output: process.stdout
 });
 
-var allowedFieldsTypes = ['string', 'number', 'date', 'boolean', 'array'];
+var allowedFieldsTypes = ['string', 'number', 'date', 'boolean', 'array', 'objectID'];
 
 // CLI
 program
@@ -45,7 +45,7 @@ function runInteractiveMode(path){
     async.series({
             name: function (cb){
                 askQuestion('Model Name : ', isModelNameParamValid, function (name){
-                    console.log(cliStyles.green + 'Available types : string, number, date, boolean, array' + cliStyles.reset);
+                    console.log(cliStyles.green + 'Available types : '+ allowedFieldsTypes.toString() + cliStyles.reset);
                     cb(null, name);
                 });
             },
