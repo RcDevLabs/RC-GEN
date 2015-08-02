@@ -21,10 +21,10 @@ TD;DR: `$ rc-gen`
 ### Non-Interactive mode
 Generates a Mongoose model, a REST controller and Express router :
 ```bash
-$ rc-gen -m car -f carDoor:number,color -r
-        create: ./models/cardModel.js
-        create: ./routes/cards.js
-        create: ./controllers/cardController.js
+$ rc-gen -m card -f carDoor:number,color -r
+        create: ./card/model.js //mongoose Schema
+        create: ./card/index.js // routes
+        create: ./card/functions/controller.js // controller
 ```
 
 ##### Options
@@ -53,9 +53,9 @@ Field Name (press <return> to stop adding fields) : color
 Field Type [string] : 
 Field Name (press <return> to stop adding fields) : 
 Generate Rest (yes/no) ? [yes] : 
-        create: ./models/cardModel.js
-        create: ./routes/cards.js
-        create: ./controllers/cardController.js
+        create: ./card/model.js
+        create: ./card/index.js
+        create: ./card/functions/controller.js
 ```
 
 ## Rendering
@@ -245,11 +245,11 @@ You then only have to add router in app.js file and MongoDB connection whit Mong
 app.js :
 ```javascript
 var routes = require('./routes/index');
-var cars = require('./modelName');
+var cards = require('../logic/cards'); //gets index.js
  ...
 
 app.use('/', routes);
-app.use('/cars', cars);
+app.use('/cards', cards);
  ...
  
 ```
