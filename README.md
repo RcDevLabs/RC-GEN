@@ -6,6 +6,8 @@ It’s a mongoose model, REST controller and Express router code generator for E
 
 To run this, clone the repo to some folder. Access it and run `npm install -g`
 
+#### Or just install directly from this Repo!!
+
 ```bash
 $ npm install -g https://github.com/RcDevLabs/RC-GEN.git
 ```
@@ -14,7 +16,7 @@ $ npm install -g https://github.com/RcDevLabs/RC-GEN.git
 
 TD;DR: `$ rc-gen` 
 
-
+²
 
 ### Non-Interactive mode
 Generates a Mongoose model, a REST controller and Express router :
