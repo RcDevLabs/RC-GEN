@@ -7,12 +7,15 @@ It’s a mongoose model, REST controller and Express router code generator for E
 To run this, clone the repo to some folder. Access it and run `npm install -g`
 
 ```bash
-$ git clone github.com/thisrepo.git rc-gen-source
-$ cd rc-gen-source
-$ npm install -g .
+$ npm install -g https://github.com/RcDevLabs/RC-GEN.git
 ```
 
 ## Usage
+
+TD;DR: `$ rc-gen` 
+
+
+
 ### Non-Interactive mode
 Generates a Mongoose model, a REST controller and Express router :
 ```bash
