@@ -2,6 +2,14 @@
 
 It’s a mongoose model, REST controller and Express router code generator for Express.js 4 application. FORKED FROM `express-mongoose-generator`
 
+It will generate the following structure:
+
+```
+modelName/index.js  //model routes
+modelName/model.js //model with Schema()
+modelName/functions/controller.js //list+crud functions
+```
+
 ## Installation
 
 To run this, clone the repo to some folder. Access it and run `npm install -g`
