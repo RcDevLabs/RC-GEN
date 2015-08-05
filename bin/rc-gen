@@ -52,7 +52,7 @@ function runInteractiveMode(path){
             fields: function (cb){
                 var exit   = false;
                 var fields = [];
-
+                var currentField = {};
                 async.whilst(
                     function(){ return !exit; },
                     function(cb){
@@ -68,12 +68,24 @@ function runInteractiveMode(path){
                                 type: function(cb){
                                     askQuestion('Field Type [string] : ', isFieldTypeParamValid, function(fieldType){
                                         fieldType = (fieldType.trim().length === 0) ? 'string' : fieldType;
+                                        currentField.type = fieldType;
                                         cb(null, fieldType);
                                     });
+                                },
+                                ref: function(cb){
+                                    if(currentField.type === 'objectID') {
+                                            askQuestion('Ref (model name refered by objectID): ', null, function(ref){
+                                                ref = (ref.trim().length === 0) ? 'INSERT_YOUR_REF_HERE' : ref;
+                                                cb(null, ref);
+                                            });
+                                        } else {
+                                            cb(null, null);
+                                        }
                                 }
                             },
                             function (err, results){
                                 if(!err){
+                                    console.log("THE RESULTS ARE ", results);
                                     fields.push(results);
                                 }
                                 cb();
