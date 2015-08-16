@@ -1,15 +1,7 @@
 var model = require('../model.js');
 
-/**
- * {controllerName}.js
- *
- * @description :: Server-side logic for managing {pluralName}.
- */
 module.exports = {
 
-    /**
-     * {controllerName}.list()
-     */
     list: function(req, res) {
         model.find(function(err, {pluralName}){
             if(err) {
@@ -21,9 +13,6 @@ module.exports = {
         });
     },
 
-    /**
-     * {controllerName}.show()
-     */
     show: function(req, res) {
         var id = req.params.id;
         model.findOne({_id: id}, function(err, {name}){
@@ -41,9 +30,6 @@ module.exports = {
         });
     },
 
-    /**
-     * {controllerName}.create()
-     */
     create: function(req, res) {
         var {name} = new model({{createFields}
         });
@@ -62,9 +48,6 @@ module.exports = {
         });
     },
 
-    /**
-     * {controllerName}.update()
-     */
     update: function(req, res) {
         var id = req.params.id;
         model.findOne({_id: id}, function(err, {name}){
@@ -97,9 +80,6 @@ module.exports = {
         });
     },
 
-    /**
-     * {controllerName}.remove()
-     */
     remove: function(req, res) {
         var id = req.params.id;
         model.findByIdAndRemove(id, function(err, {name}){

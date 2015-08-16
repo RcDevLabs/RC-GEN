@@ -96,6 +96,7 @@ function runInteractiveMode(path){
             if(results.rest == 'yes'){
                 generators.generateRouter(path, results.name);
                 generators.generateController(path, results.name, results.fields);
+                generators.generateIndex(path, results.name);
             }
 
             closeProgram();
