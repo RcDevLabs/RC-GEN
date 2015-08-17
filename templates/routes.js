@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var controller = require('./functions/controller.js');
 var {modelName} = require('./index');
 
 
