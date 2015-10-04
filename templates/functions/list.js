@@ -3,11 +3,15 @@ var model = require('../model.js');
 var list = function(req, res) {
 	model.find(function(err, {pluralName}){
 		if(err) {
-			return res.json(500, {
-				message: 'Error getting {name}.'
+			return res.json({
+				msg: 'error',
+				errors: ['Error getting {name}.', err]
 			});
 		}
-		return res.json({pluralName});
+		return res.json({
+					msg: 'ok',
+					data: {pluralName}
+					});
 	});
 };
 

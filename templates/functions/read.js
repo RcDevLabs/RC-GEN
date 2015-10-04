@@ -3,15 +3,20 @@ module.exports = function(req, res) {
 	var id = req.params.id;
 	model.findOne({_id: id}, function(err, {name}){
 		if(err) {
-			return res.json(500, {
-				message: 'Error getting {name}.'
+			return res.json({
+				msg: 'error',
+				errors: ['Error getting {name}.', err]
 			});
 		}
 		if(!{name}) {
-			return res.json(404, {
-				message: 'No such {name}'
+			return res.json({
+				msg: 'error',
+				errors: ['No such {name}', 404]
 			});
 		}
-		return res.json({name});
+		return res.json({
+			msg: 'ok',
+			data:	{name}
+		});
 	});
 };
